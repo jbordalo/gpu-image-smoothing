@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
 
     read_ppm(f, &img, &imgw, &imgh, &imgc);
 	printf("PPM image %dx%dx%d\n", imgw, imgh, imgc);
-     printImg(imgh, imgw, img);
+//    printImg(imgh, imgw, img);
 
     int *out = (int*)malloc(3*imgw*imgh*sizeof(int));
     assert(out!=NULL);
@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
     t = clock()-t;
     printf("time %f ms\n", t/(double)(CLOCKS_PER_SEC/1000));
 
-     printImg(imgh, imgw, out);
+    //printImg(imgh, imgw, out);
     FILE *g=fopen("out.ppm", "w");
     write_ppm(g, out, imgw, imgh, imgc);
     fclose(g);

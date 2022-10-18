@@ -73,16 +73,14 @@ void write_ppm(FILE *f, int *img, int width, int height, int maxcolors) {
 void printImg(int imgh, int imgw, const int *img) {
     for (int j=0; j < imgh; j++) {
         for (int i=0; i<imgw; i++) {
-            int x= 3*(i+j*imgw);
+            int x = 3*(i+j*imgw);
             printf("%d,%d,%d  ", img[x], img[x+1], img[x+2]);
         }
         putchar('\n');
     }
 }
 
-
 __global__ void averageImg(int*out, int*img, int width, int height) {
-
     int line = blockIdx.x*blockDim.x+threadIdx.x;
     int col = blockIdx.y*blockDim.y+threadIdx.y;
 
@@ -116,7 +114,7 @@ int main(int argc, char *argv[]) {
 
     read_ppm(f, &img, &imgw, &imgh, &imgc);
 	printf("PPM image %dx%dx%d\n", imgw, imgh, imgc);
-    printImg(imgh, imgw, img);
+//    printImg(imgh, imgw, img);
 
     dim3 dimBlock(NTHREADS, NTHREADS);
     dim3 dimGrid((imgw+dimBlock.x-1)/dimBlock.x, (imgh+dimBlock.y-1)/dimBlock.y);
@@ -143,7 +141,7 @@ int main(int argc, char *argv[]) {
 
     cudaMemcpy(out, out_cuda, 3*imgh*imgw*sizeof(int), cudaMemcpyDeviceToHost);
 
-     printImg(imgh, imgw, out);
+    //printImg(imgh, imgw, out);
     FILE *g=fopen("out_cuda.ppm", "w");
     write_ppm(g, out, imgw, imgh, imgc);
     fclose(g);
