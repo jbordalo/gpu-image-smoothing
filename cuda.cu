@@ -81,8 +81,10 @@ void printImg(int imgh, int imgw, const int *img) {
 }
 
 __global__ void averageImg(int*out, int*img, int width, int height) {
-    int line = blockIdx.x*blockDim.x+threadIdx.x;
-    int col = blockIdx.y*blockDim.y+threadIdx.y;
+    int col = blockIdx.x*blockDim.x+threadIdx.x;
+    int line = blockIdx.y*blockDim.y+threadIdx.y;
+
+    if (col >= width || line >= height || col < 0 || line < 0) return;
 
     int r=0,g=0,b=0, n=0;
     for (int l=line-1; l<line+2 && l<height; l++)
@@ -117,7 +119,7 @@ int main(int argc, char *argv[]) {
 //    printImg(imgh, imgw, img);
 
     dim3 dimBlock(NTHREADS, NTHREADS);
-    dim3 dimGrid((imgw+dimBlock.x-1)/dimBlock.x, (imgh+dimBlock.y-1)/dimBlock.y);
+    dim3 dimGrid((3*imgh+dimBlock.x-1)/dimBlock.x, (imgw+dimBlock.y-1)/dimBlock.y);
 
     int *out = (int*)malloc(3*imgw*imgh*sizeof(int));
     assert(out!=NULL);
@@ -139,7 +141,7 @@ int main(int argc, char *argv[]) {
     t = clock()-t;
     printf("time %f ms\n", t/(double)(CLOCKS_PER_SEC/1000));
 
-    cudaMemcpy(out, out_cuda, 3*imgh*imgw*sizeof(int), cudaMemcpyDeviceToHost);
+    cudaMemcpy(out, out_cuda, 3*imgw*imgh*sizeof(int), cudaMemcpyDeviceToHost);
 
     //printImg(imgh, imgw, out);
     FILE *g=fopen("out_cuda.ppm", "w");

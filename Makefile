@@ -2,12 +2,12 @@
 
 .PHONY:	all
 
-all:	main
+all:	main cuda
 
 main:	main.c 
 	cc -g -o $@ $< 
 
-# TODO:
+
 cuda:	cuda.cu
 	nvcc -o $@ $<
 
